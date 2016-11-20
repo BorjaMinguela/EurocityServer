@@ -105,22 +105,47 @@ public class LogicREST {
 */
 	@SuppressWarnings("unchecked")
 	@GET//Anotación de método para REST
-	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
 	@Path("/requestUsers")	
-	public String requestUsers() {
-		System.out.println("test");
+	public UsersJSON requestUsers() {
 		System.out.println("requestUsers: "+hsr.getRemoteAddr());
+			
+		UsersJSON usersJSON=new UsersJSON();
+		List<User> userList=(List<User>)em.createNamedQuery("User.findAll").getResultList();
+		//List<User> userList=(List<User>)em.createNamedQuery("User.findByName").setParameter("nombre", nombre).getResultList();
+		List<UserJSON> userJSONList=new ArrayList<UserJSON>();
 		
-		List<Foto> userList=(List<Foto>)em.createNamedQuery("Foto.findAll").getResultList();
-		System.out.println("test2");
-		
+		//System.out.println("test2");
+		System.out.println(userList.size());
 		for(int i=0;i<userList.size();i++){
-			//System.out.println(userList.get(i).getNombre());
+			User u=userList.get(i);
+			UserJSON uJSON=new UserJSON(u.getNombre(),u.getFotoPerfil());
+			userJSONList.add(uJSON);
+			System.out.println(userList.get(i).getNombre());
 		}
 		
-		//userJSON.setLessons(userJSONList);//Meter la lista lessonJSONList en el objeto lessonsJSON
-
-		return "test!";
+		usersJSON.setUsers(userJSONList);//Meter la lista lessonJSONList en el objeto lessonsJSON
+		System.out.println(usersJSON);
+		return usersJSON;
+	}
+	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/requestUser")	
+	public UserJSON requestUser(@QueryParam("userName") String nombre) {
+		System.out.println("requestUsers.Nombre= "+nombre);
+		System.out.println("requestUsers: "+hsr.getRemoteAddr());
+		User user=new User();	
+		List<User> userList=(List<User>)em.createNamedQuery("User.findByName").setParameter("nombre", nombre).getResultList();
+		if (!userList.isEmpty()){
+			user=userList.get(0);
+		}
+		else{
+			user.setNombre("");
+		}
+		
+		UserJSON uJSON=new UserJSON(user.getNombre(),user.getFotoPerfil());
+		return uJSON;
 	}
 	
 //	@SuppressWarnings("unchecked")
