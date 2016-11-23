@@ -54,55 +54,7 @@ public class LogicREST {
 	
 	public LogicREST() {
 	}
-
 	
-	
-	
-	
-	
-//	@PostConstruct
-//	private void buildUploadFolderTree() {
-//		String contextName=hsr.getContextPath().substring(1);
-//		String folderNames[]={"audio", "compressed", "docs", "files", "img", "video"};
-//		
-//		FileUtils.generateFolderTree(contextName, folderNames);
-//		//Crear la carpeta contextName con las subcarpetas indicadas en folderNames, dentro de la ubicación por defecto
-//	}
-	
-//	@Path("/uploadFile")
-//	@POST//Anotación de método para REST
-//    @Consumes("multipart/form-data")//Anotación del tipo de mensaje HTTP-req consumido
-//    public Response uploadFile(MultipartFormDataInput input) {
-//        System.out.println("uploadFile: "+hsr.getRemoteAddr());
-//
-//        Response httpResponse=FileUtils.uploadFile(input);//Recoger el fichero recibido como contenido multipart y escribirlo en la ubicación por defecto
-//		
-//        return httpResponse;		
-//    }
-
-	
-	
-	
-	/*
-	@SuppressWarnings("unchecked")
-	//Anotación de método para REST
-	//Anotación del tipo de datos producido
-    @Path("/requestCalification")
-	public Response requestCalification(@QueryParam("solutionName") String solutionName) {
-		System.out.println("requestCalification: "+hsr.getRemoteAddr());
-		Response response;
-		String exerciseCode=solutionName.substring(solutionName.indexOf("E"),solutionName.indexOf("_"));
-		String login=solutionName.substring(solutionName.indexOf("_")+1);
-		
-		List<Solution> solutionList=(List<Slolution>)em.createName//Consultar la lista de soluciones calificadas con código de ejercicio=exerciseCode y login=login
-		//Si la lista es de 1 elemento (sólo puede haber un registro así en la tabla)
-			response=Response.status(200).entity(solutionList.get(0).getCalification()).build();
-		//si no
-			response=//Construir HTTP-RESPONSE con contenido "NONE"
-
-		return response;
-	}	
-*/
 	@SuppressWarnings("unchecked")
 	@GET//Anotación de método para REST
 	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
@@ -119,7 +71,7 @@ public class LogicREST {
 		System.out.println(userList.size());
 		for(int i=0;i<userList.size();i++){
 			User u=userList.get(i);
-			UserJSON uJSON=new UserJSON(u.getNombre(),u.getFotoPerfil());
+			UserJSON uJSON=new UserJSON(u.getNombre());
 			userJSONList.add(uJSON);
 			System.out.println(userList.get(i).getNombre());
 		}
@@ -143,10 +95,52 @@ public class LogicREST {
 		else{
 			user.setNombre("");
 		}
-		
-		UserJSON uJSON=new UserJSON(user.getNombre(),user.getFotoPerfil());
+		UserJSON uJSON=new UserJSON(user.getNombre());
 		return uJSON;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@POST//Anotación de método para REST
+	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
+	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
+	@Path("/addUser")	
+	public Response addUser(UserJSON userJSON) {
+		Response response;
+		System.out.println("addUser: "+hsr.getRemoteAddr());
+		System.out.println("addUser nombre: "+userJSON.getNombre());
+		User usuario=new User();
+		usuario.setNombre(userJSON.getNombre());
+		em.persist(usuario);
+		response=Response.status(200).entity("Usuario añadido").build();
+		return response;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@POST//Anotación de método para REST
+	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
+	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
+	@Path("/addValoracion")	
+	public Response addValoracion(ValoracionJSON valoracionJSON) {
+		Response response;
+		System.out.println("addValoracion: "+hsr.getRemoteAddr());
+		System.out.println("addValoracion nota: "+valoracionJSON.getNota());
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", valoracionJSON.getLugar()).getSingleResult();
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", valoracionJSON.getUser()).getSingleResult();
+		System.out.println("Lugar: "+lugar.getNombre()+", "+lugar.getIdLugar());
+		System.out.println("User: "+user.getNombre()+", "+user.getIdUser());
+		Valoracion valoracion=new Valoracion();
+		valoracion.setNota(valoracionJSON.getNota());
+		valoracion.setLugar(lugar);
+		valoracion.setUser(user);
+		em.persist(valoracion);
+		response=Response.status(200).entity("Valoración añadida. Gracias por dar tu opinión").build();
+		System.out.println("Valoración añadida correctamente");
+		return response;
+	}
+	
 	
 //	@SuppressWarnings("unchecked")
 //	@GET//Anotación de método para REST

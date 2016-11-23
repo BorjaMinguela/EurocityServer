@@ -5,18 +5,16 @@ import javax.persistence.*;
 
 
 /**
- * The persistent class for the Comentarios database table.
+ * The persistent class for the Comentario database table.
  * 
  */
 @Entity
-@Table(name="Comentarios")
 @NamedQuery(name="Comentario.findAll", query="SELECT c FROM Comentario c")
 public class Comentario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idComentarios;
+	private int idComentario;
 
 	private String categoria;
 
@@ -35,12 +33,12 @@ public class Comentario implements Serializable {
 	public Comentario() {
 	}
 
-	public int getIdComentarios() {
-		return this.idComentarios;
+	public int getIdComentario() {
+		return this.idComentario;
 	}
 
-	public void setIdComentarios(int idComentarios) {
-		this.idComentarios = idComentarios;
+	public void setIdComentario(int idComentario) {
+		this.idComentario = idComentario;
 	}
 
 	public String getCategoria() {

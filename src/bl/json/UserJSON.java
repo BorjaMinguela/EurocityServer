@@ -28,17 +28,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserJSON {
 	@XmlElement
 	private String nombre;
-	
-	@XmlElement
-	private String fotoPerfil;
+
 
 	public UserJSON() {
 	}
 	
-	public UserJSON(String nombre, String fotoPerfil) {
+	public UserJSON(String nombre) {
 		this.nombre=nombre;
-		this.fotoPerfil=fotoPerfil;
-}
+	}
+
 	public String getNombre() {
 		return this.nombre;
 	}
@@ -46,11 +44,5 @@ public class UserJSON {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public String getfotoPerfil() {
-		return this.fotoPerfil;
-	}
-
-	public void setfotoPerfil(String fotoPerfil) {
-		this.nombre = fotoPerfil;
-	}
+	
 }

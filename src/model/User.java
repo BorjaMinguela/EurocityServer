@@ -18,10 +18,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idUser;
-
-	private String fotoPerfil;
 
 	private String nombre;
 
@@ -29,13 +26,13 @@ public class User implements Serializable {
 	@OneToMany(mappedBy="user")
 	private List<Comentario> comentarios;
 
-	//bi-directional many-to-one association to Ejercicio
-	@OneToMany(mappedBy="user")
-	private List<Ejercicio> ejercicios;
-
 	//bi-directional many-to-one association to Foto
 	@OneToMany(mappedBy="user")
 	private List<Foto> fotos;
+
+	//bi-directional many-to-one association to NotaEjercicioUser
+	@OneToMany(mappedBy="user")
+	private List<NotaEjercicioUser> notaEjercicioUsers;
 
 	//bi-directional many-to-one association to Valoracion
 	@OneToMany(mappedBy="user")
@@ -50,14 +47,6 @@ public class User implements Serializable {
 
 	public void setIdUser(int idUser) {
 		this.idUser = idUser;
-	}
-
-	public String getFotoPerfil() {
-		return this.fotoPerfil;
-	}
-
-	public void setFotoPerfil(String fotoPerfil) {
-		this.fotoPerfil = fotoPerfil;
 	}
 
 	public String getNombre() {
@@ -90,28 +79,6 @@ public class User implements Serializable {
 		return comentario;
 	}
 
-	public List<Ejercicio> getEjercicios() {
-		return this.ejercicios;
-	}
-
-	public void setEjercicios(List<Ejercicio> ejercicios) {
-		this.ejercicios = ejercicios;
-	}
-
-	public Ejercicio addEjercicio(Ejercicio ejercicio) {
-		getEjercicios().add(ejercicio);
-		ejercicio.setUser(this);
-
-		return ejercicio;
-	}
-
-	public Ejercicio removeEjercicio(Ejercicio ejercicio) {
-		getEjercicios().remove(ejercicio);
-		ejercicio.setUser(null);
-
-		return ejercicio;
-	}
-
 	public List<Foto> getFotos() {
 		return this.fotos;
 	}
@@ -132,6 +99,28 @@ public class User implements Serializable {
 		foto.setUser(null);
 
 		return foto;
+	}
+
+	public List<NotaEjercicioUser> getNotaEjercicioUsers() {
+		return this.notaEjercicioUsers;
+	}
+
+	public void setNotaEjercicioUsers(List<NotaEjercicioUser> notaEjercicioUsers) {
+		this.notaEjercicioUsers = notaEjercicioUsers;
+	}
+
+	public NotaEjercicioUser addNotaEjercicioUser(NotaEjercicioUser notaEjercicioUser) {
+		getNotaEjercicioUsers().add(notaEjercicioUser);
+		notaEjercicioUser.setUser(this);
+
+		return notaEjercicioUser;
+	}
+
+	public NotaEjercicioUser removeNotaEjercicioUser(NotaEjercicioUser notaEjercicioUser) {
+		getNotaEjercicioUsers().remove(notaEjercicioUser);
+		notaEjercicioUser.setUser(null);
+
+		return notaEjercicioUser;
 	}
 
 	public List<Valoracion> getValoracions() {

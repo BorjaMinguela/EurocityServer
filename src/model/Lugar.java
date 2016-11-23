@@ -10,13 +10,18 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Lugar.findAll", query="SELECT l FROM Lugar l")
+@NamedQueries({
+	@NamedQuery(name="Lugar.findAll", query="SELECT l FROM Lugar l"),
+	@NamedQuery(name="Lugar.findByName", query="SELECT l FROM Lugar l WHERE l.nombre= :nombre")
+})
 public class Lugar implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idLugar;
+
+	@Column(name="Nombre")
+	private String nombre;
 
 	//bi-directional many-to-one association to Comentario
 	@OneToMany(mappedBy="lugar")
@@ -31,9 +36,8 @@ public class Lugar implements Serializable {
 	private List<Foto> fotos;
 
 	//bi-directional many-to-one association to Valoracion
-	@ManyToOne
-	@JoinColumn(name="Valoracion_idValoracion")
-	private Valoracion valoracion;
+	@OneToMany(mappedBy="lugar")
+	private List<Valoracion> valoracions;
 
 	public Lugar() {
 	}
@@ -44,6 +48,14 @@ public class Lugar implements Serializable {
 
 	public void setIdLugar(int idLugar) {
 		this.idLugar = idLugar;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public List<Comentario> getComentarios() {
@@ -112,12 +124,26 @@ public class Lugar implements Serializable {
 		return foto;
 	}
 
-	public Valoracion getValoracion() {
-		return this.valoracion;
+	public List<Valoracion> getValoracions() {
+		return this.valoracions;
 	}
 
-	public void setValoracion(Valoracion valoracion) {
-		this.valoracion = valoracion;
+	public void setValoracions(List<Valoracion> valoracions) {
+		this.valoracions = valoracions;
+	}
+
+	public Valoracion addValoracion(Valoracion valoracion) {
+		getValoracions().add(valoracion);
+		valoracion.setLugar(this);
+
+		return valoracion;
+	}
+
+	public Valoracion removeValoracion(Valoracion valoracion) {
+		getValoracions().remove(valoracion);
+		valoracion.setLugar(null);
+
+		return valoracion;
 	}
 
 }

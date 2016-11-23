@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.List;
 
 
 /**
@@ -15,14 +14,14 @@ public class Valoracion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idValoracion;
 
 	private int nota;
 
 	//bi-directional many-to-one association to Lugar
-	@OneToMany(mappedBy="valoracion")
-	private List<Lugar> lugars;
+	@ManyToOne
+	@JoinColumn(name="Lugar_idLugar")
+	private Lugar lugar;
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
@@ -48,26 +47,12 @@ public class Valoracion implements Serializable {
 		this.nota = nota;
 	}
 
-	public List<Lugar> getLugars() {
-		return this.lugars;
+	public Lugar getLugar() {
+		return this.lugar;
 	}
 
-	public void setLugars(List<Lugar> lugars) {
-		this.lugars = lugars;
-	}
-
-	public Lugar addLugar(Lugar lugar) {
-		getLugars().add(lugar);
-		lugar.setValoracion(this);
-
-		return lugar;
-	}
-
-	public Lugar removeLugar(Lugar lugar) {
-		getLugars().remove(lugar);
-		lugar.setValoracion(null);
-
-		return lugar;
+	public void setLugar(Lugar lugar) {
+		this.lugar = lugar;
 	}
 
 	public User getUser() {

@@ -3,12 +3,13 @@
 	<!--<persistence-unit name="EurocityServer">  -->
 	<persistence-unit name="EurocityApp" transaction-type="JTA">
 	    <jta-data-source>java:/mysql</jta-data-source>
-		<class>model.Comentario</class>
-		<class>model.Ejercicio</class>
-		<class>model.Foto</class>
-		<class>model.Lugar</class>
-		<class>model.User</class>
-		<class>model.Valoracion</class>
+	    <class>model.Comentario</class>
+	    <class>model.Ejercicio</class>
+	    <class>model.Foto</class>
+	    <class>model.Lugar</class>
+	    <class>model.NotaEjercicioUser</class>
+	    <class>model.User</class>
+	    <class>model.Valoracion</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
 			<property name="hibernate.hbm2ddl.auto" value="update"/>		
