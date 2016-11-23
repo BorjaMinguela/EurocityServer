@@ -21,30 +21,26 @@
 
 package bl.json;
 
-//import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UsersJSON {
-	@XmlElement(name="user")
-	private List<UserJSON> users;
+public class NotasJSON {
+	@XmlElement(name="nota")
+	private List<NotaJSON> notas;
 
 
-	public UsersJSON() {
+	public NotasJSON() {
 	}
 	
-//	public UsersJSON(String nombre) {
-//		users=new ArrayList<UserJSON>();
-//}
 	
-	public List<UserJSON> getUsers() {
-		return this.users;
+	public List<NotaJSON> getNotas() {
+		return this.notas;
 	}
 
-	public void setUsers(List<UserJSON> users) {
-		this.users = users;
+	public void setNotaes(List<NotaJSON> notas) {
+		this.notas = notas;
 	}
 }

@@ -21,30 +21,51 @@
 
 package bl.json;
 
-//import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UsersJSON {
-	@XmlElement(name="user")
-	private List<UserJSON> users;
+public class NotaJSON {
+	@XmlElement
+	private int nota;
+	@XmlElement
+	private String user;
+	@XmlElement
+	private String tipo;
 
 
-	public UsersJSON() {
+	public NotaJSON() {
 	}
 	
-//	public UsersJSON(String nombre) {
-//		users=new ArrayList<UserJSON>();
-//}
-	
-	public List<UserJSON> getUsers() {
-		return this.users;
+	public NotaJSON(int nota,String user, String tipo) {
+		this.nota=nota;
+		this.setTipo(tipo);
+		this.setUser(user);
 	}
 
-	public void setUsers(List<UserJSON> users) {
-		this.users = users;
+	public int getNota() {
+		return this.nota;
 	}
+
+	public void setNota(int nota) {
+		this.nota = nota;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+
 }

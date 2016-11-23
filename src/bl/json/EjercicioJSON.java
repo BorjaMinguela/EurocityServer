@@ -21,30 +21,61 @@
 
 package bl.json;
 
-//import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UsersJSON {
-	@XmlElement(name="user")
-	private List<UserJSON> users;
+public class EjercicioJSON {
+	@XmlElement
+	private String enunciado;
+	@XmlElement
+	private int categoria;
+	@XmlElement
+	private String solucion;
+	@XmlElement
+	private String lugar;
 
 
-	public UsersJSON() {
+	public EjercicioJSON() {
 	}
 	
-//	public UsersJSON(String nombre) {
-//		users=new ArrayList<UserJSON>();
-//}
-	
-	public List<UserJSON> getUsers() {
-		return this.users;
+	public EjercicioJSON(String enunciado,int categoria,String solucion,String lugar) {
+		this.enunciado=enunciado;
+		this.categoria=categoria;
+		this.solucion=solucion;
+		this.lugar=lugar;
 	}
 
-	public void setUsers(List<UserJSON> users) {
-		this.users = users;
+	public String getEnunciado() {
+		return this.enunciado;
 	}
+
+	public void setEnunciado(String enunciado) {
+		this.enunciado = enunciado;
+	}
+
+	public int getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(int categoria) {
+		this.categoria = categoria;
+	}
+
+	public String getSolucion() {
+		return solucion;
+	}
+
+	public void setSolucion(String solucion) {
+		this.solucion = solucion;
+	}
+
+	public String getLugar() {
+		return lugar;
+	}
+
+	public void setLugar(String lugar) {
+		this.lugar = lugar;
+	}
+	
 }

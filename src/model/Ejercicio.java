@@ -17,9 +17,9 @@ public class Ejercicio implements Serializable {
 	@Id
 	private int idEjercicio;
 
-	private String categoria;
+	private int categoria;
 
-	private int enunciado;
+	private String enunciado;
 
 	private String solucion;
 
@@ -43,19 +43,19 @@ public class Ejercicio implements Serializable {
 		this.idEjercicio = idEjercicio;
 	}
 
-	public String getCategoria() {
+	public int getCategoria() {
 		return this.categoria;
 	}
 
-	public void setCategoria(String categoria) {
+	public void setCategoria(int categoria) {
 		this.categoria = categoria;
 	}
 
-	public int getEnunciado() {
+	public String getEnunciado() {
 		return this.enunciado;
 	}
 
-	public void setEnunciado(int enunciado) {
+	public void setEnunciado(String enunciado) {
 		this.enunciado = enunciado;
 	}
 

@@ -21,30 +21,49 @@
 
 package bl.json;
 
-//import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UsersJSON {
-	@XmlElement(name="user")
-	private List<UserJSON> users;
+public class FotoJSON {
+	@XmlElement
+	private String path;
+	@XmlElement
+	private String user;
+	@XmlElement
+	private String lugar;
 
-
-	public UsersJSON() {
+	public FotoJSON() {
 	}
 	
-//	public UsersJSON(String nombre) {
-//		users=new ArrayList<UserJSON>();
-//}
-	
-	public List<UserJSON> getUsers() {
-		return this.users;
+	public FotoJSON(String path,String user,String lugar) {
+		this.path=path;
+		this.user=user;
+		this.lugar=lugar;
 	}
 
-	public void setUsers(List<UserJSON> users) {
-		this.users = users;
+	public String getPath() {
+		return this.path;
 	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+	
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getLugar() {
+		return lugar;
+	}
+
+	public void setLugar(String lugar) {
+		this.lugar = lugar;
+	}
+	
 }
