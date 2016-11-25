@@ -31,15 +31,15 @@ public class NotaJSON {
 	@XmlElement
 	private String user;
 	@XmlElement
-	private String tipo;
+	private EjercicioJSON ejercicio;
 
 
 	public NotaJSON() {
 	}
 	
-	public NotaJSON(int nota,String user, String tipo) {
+	public NotaJSON(int nota,String user, EjercicioJSON ejercicio) {
 		this.nota=nota;
-		this.setTipo(tipo);
+		this.setEjercicio(ejercicio);
 		this.setUser(user);
 	}
 
@@ -59,12 +59,12 @@ public class NotaJSON {
 		this.user = user;
 	}
 
-	public String getTipo() {
-		return tipo;
+	public EjercicioJSON getEjercicio() {
+		return ejercicio;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setEjercicio(EjercicioJSON ejercicio) {
+		this.ejercicio = ejercicio;
 	}
 
 

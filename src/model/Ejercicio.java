@@ -10,7 +10,10 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Ejercicio.findAll", query="SELECT e FROM Ejercicio e")
+@NamedQueries({
+	@NamedQuery(name="Ejercicio.findAll", query="SELECT e FROM Ejercicio e"),
+	@NamedQuery(name="Ejercicio.findByCategoria", query="SELECT e FROM Ejercicio e WHERE e.categoria= :categoria AND e.lugar= :lugar")
+})
 public class Ejercicio implements Serializable {
 	private static final long serialVersionUID = 1L;
 

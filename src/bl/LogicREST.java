@@ -141,7 +141,54 @@ public class LogicREST {
 		return response;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/requestEjercicios")	
+	public EjerciciosJSON requestEjercicios(@QueryParam("categoria") int categoria, @QueryParam("ciudad") String ciudad) {
+		System.out.println("requestEjercicios.Categoria= "+categoria);
+		System.out.println("requestEjercicios.Lugar= "+ciudad);
+		System.out.println("requestEjercicios: "+hsr.getRemoteAddr());
+		
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", ciudad).getSingleResult();
+		System.out.println("lugar= "+lugar.getNombre());
+		EjerciciosJSON ejerciciosJSON=new EjerciciosJSON();
+		List<EjercicioJSON> ejercicioJSONList=new ArrayList<EjercicioJSON>();
+		
+		List<Ejercicio> ejercicioList=(List<Ejercicio>)em.createNamedQuery("Ejercicio.findByCategoria").setParameter("categoria", categoria).setParameter("lugar", lugar).getResultList();
+		for(int i=0;i<ejercicioList.size();i++){
+			Ejercicio e=ejercicioList.get(i);
+			EjercicioJSON eJSON=new EjercicioJSON(e.getEnunciado(),e.getCategoria(),e.getSolucion(),e.getLugar().getNombre());
+			ejercicioJSONList.add(eJSON);
+			System.out.println(ejercicioList.get(i).getEnunciado());
+		}
+		ejerciciosJSON.setEjercicios(ejercicioJSONList);
+		return ejerciciosJSON;
+	}
 	
+	@SuppressWarnings("unchecked")
+	@POST//Anotación de método para REST
+	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
+	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
+	@Path("/addNota")	
+	public Response addNota(NotaJSON notaJSON) {
+		Response response;
+		System.out.println("addNota: "+hsr.getRemoteAddr());
+		System.out.println("addNota nota: "+notaJSON.getNota());
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", notaJSON.getEjercicio().getLugar()).getSingleResult();
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", notaJSON.getUser()).getSingleResult();
+		Ejercicio ejercicio=(Ejercicio)em.createNamedQuery("Ejercicio.findByCategoria").setParameter("categoria", notaJSON.getEjercicio().getCategoria()).setParameter("lugar", lugar).getResultList().get(0);
+		System.out.println("Lugar: "+lugar.getNombre()+", "+lugar.getIdLugar());
+
+		NotaEjercicioUser nota=new NotaEjercicioUser();
+		nota.setNota(notaJSON.getNota());
+		nota.setUser(user);
+		nota.setEjercicio(ejercicio);
+		em.persist(nota);
+		response=Response.status(200).entity("Nota subida al servidor").build();
+		System.out.println("Valoración añadida correctamente");
+		return response;
+	}
 //	@SuppressWarnings("unchecked")
 //	@GET//Anotación de método para REST
 //	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
