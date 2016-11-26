@@ -9,7 +9,10 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@NamedQuery(name="Comentario.findAll", query="SELECT c FROM Comentario c")
+@NamedQueries({
+	@NamedQuery(name="Comentario.findAll", query="SELECT c FROM Comentario c"),
+	@NamedQuery(name="Comentario.findByCategoria", query="SELECT c FROM Comentario c WHERE c.categoria= :categoria AND c.lugar= :lugar")
+})
 public class Comentario implements Serializable {
 	private static final long serialVersionUID = 1L;
 

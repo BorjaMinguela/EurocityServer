@@ -167,6 +167,81 @@ public class LogicREST {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/requestFotos")	
+	public FotosJSON requestFotos(@QueryParam("usuario") String usuario, @QueryParam("ciudad") String ciudad) {
+		System.out.println("requestFotos.usuario= "+usuario);
+		System.out.println("requestFotos.Lugar= "+ciudad);
+		System.out.println("requestFotos: "+hsr.getRemoteAddr());
+		
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", ciudad).getSingleResult();
+		System.out.println("lugar= "+lugar.getNombre());
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", usuario).getSingleResult();
+		FotosJSON fotosJSON=new FotosJSON();
+		List<FotoJSON> fotoJSONList=new ArrayList<FotoJSON>();
+		
+		List<Foto> fotoList=(List<Foto>)em.createNamedQuery("Foto.findByLugar").setParameter("usuario", user).setParameter("lugar", lugar).getResultList();
+		for(int i=0;i<fotoList.size();i++){
+			Foto f=fotoList.get(i);
+			FotoJSON fJSON=new FotoJSON(f.getPath(),f.getUser().getNombre(),f.getLugar().getNombre());
+			fotoJSONList.add(fJSON);
+			System.out.println(fotoList.get(i).getPath());
+		}
+		fotosJSON.setFotos(fotoJSONList);
+		return fotosJSON;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/requestComentarios")	
+	public ComentariosJSON requestComentarios(@QueryParam("categoria") String categoria, @QueryParam("ciudad") String ciudad) {
+		System.out.println("requestComentarios.categoria= "+categoria);
+		System.out.println("requestComentarios.Lugar= "+ciudad);
+		System.out.println("requestComentarios: "+hsr.getRemoteAddr());
+		
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", ciudad).getSingleResult();
+		System.out.println("lugar= "+lugar.getNombre());
+		ComentariosJSON comentariosJSON=new ComentariosJSON();
+		List<ComentarioJSON> comentarioJSONList=new ArrayList<ComentarioJSON>();
+		
+		List<Comentario> comentarioList=(List<Comentario>)em.createNamedQuery("Comentario.findByCategoria").setParameter("categoria", categoria).setParameter("lugar", lugar).getResultList();
+		for(int i=0;i<comentarioList.size();i++){
+			Comentario c=comentarioList.get(i);
+			ComentarioJSON cJSON=new ComentarioJSON(c.getComentario(),c.getCategoria(),c.getUser().getNombre(),c.getLugar().getNombre());
+			comentarioJSONList.add(cJSON);
+			System.out.println(comentarioList.get(i).getComentario());
+		}
+		comentariosJSON.setComentarios(comentarioJSONList);
+		return comentariosJSON;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@POST//Anotación de método para REST
+	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
+	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
+	@Path("/addComentario")	
+	public Response addComentario(ComentarioJSON comentarioJSON) {
+		Response response;
+		System.out.println("addComentario: "+hsr.getRemoteAddr());
+		System.out.println("addComentario comentario: "+comentarioJSON.getComentario());
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", comentarioJSON.getLugar()).getSingleResult();
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", comentarioJSON.getUser()).getSingleResult();
+		System.out.println("Lugar: "+lugar.getNombre()+", "+lugar.getIdLugar());
+		System.out.println("User: "+user.getNombre()+", "+user.getIdUser());
+		Comentario comentario=new Comentario();
+		comentario.setComentario(comentarioJSON.getComentario());
+		comentario.setLugar(lugar);
+		comentario.setUser(user);
+		comentario.setCategoria(comentarioJSON.getCategoria());
+		em.persist(comentario);
+		response=Response.status(200).entity("Comentario añadido").build();
+		System.out.println("Comentario añadido");
+		return response;
+	}
+	
+	@SuppressWarnings("unchecked")
 	@POST//Anotación de método para REST
 	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
 	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
@@ -189,109 +264,5 @@ public class LogicREST {
 		System.out.println("Valoración añadida correctamente");
 		return response;
 	}
-//	@SuppressWarnings("unchecked")
-//	@GET//Anotación de método para REST
-//	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
-//	@Path("/requestUsers")	
-//	public UserJSON requestUsers() {
-//		System.out.println("test");
-//		System.out.println("requestUsers: "+hsr.getRemoteAddr());
-//		
-//		UserJSON userJSON=new UserJSON();
-//		//List<UserJSON> userJSONList=new ArrayList<UserJSON>();
-//		
-//		List<User> userList=(List<User>)em.createNamedQuery("User.findAll").getResultList();//Consultar la lista de todas las lecciones
-//			
-//		for(int i=0;i<userList.size();i++){//Para cada lección de la lista
-//			User u=userList.get(i);
-//			System.out.println(u.getNombre());
-//			//UserJSON uJSON=new UserJSON(u.getNombre(),u.getFotoPerfil());//Crear objeto LessonJSON, copiando lessonCode y title
-//			//userJSONList.add(uJSON);//Añadir objeto LessonJSON creado a la lista lessonJSONList
-//		}
-//		//userJSON.setLessons(userJSONList);//Meter la lista lessonJSONList en el objeto lessonsJSON
-//
-//		return userJSON;
-//	}
 
-
-//	@SuppressWarnings("unchecked")
-//	@GET//Anotación de método para REST
-//	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
-//	@Path("/requestInitialData")
-//	public InitialDataJSON requestInitialData(@QueryParam("login") String login, @QueryParam("lessonCode") String lessonCode) {
-//		System.out.println("requestInitialData: "+hsr.getRemoteAddr());
-//		
-//		InitialDataJSON initialDataJSON=new InitialDataJSON();
-//		
-//		List<Student> students="";//Consultar la lista de estudiantes con login=login
-//
-//		if(students.size()==1) {
-//			ExercisesJSON exercisesJSON=new ExercisesJSON(login,lessonCode);
-//			SolutionsJSON solutionsJSON=new SolutionsJSON(login,lessonCode);
-//
-//			List<Exercise> exerciseList="";//Consultar la lista de ejercicios con lessonCode=lessonCode (ejercicios de una lección concreta)
-//		
-//			List<ExerciseJSON> exerciseJSONList=new ArrayList<ExerciseJSON>();
-//			List<SolutionJSON> solutionJSONList=new ArrayList<SolutionJSON>();
-//			
-//			{//Para cada ejercicio de la lista
-//				Exercise e=exerciseList.get(i);
-//				//Crear objeto ExerciseJSON, copiando exerciseCode, wording y shortName de resourceType
-//				//Añadir objeto ExerciseJSON creado a la lista exerciseJSONList
-//			
-//				List<Solution> solutionList="";//Consultar la lista de soluciones con exerciseCode=exerciseCode y login=login
-//			
-//				SolutionJSON sJSON;
-//				//Si la lista es de 1 elemento (sólo puede haber un registro así en la tabla)
-//					//Crear objeto sJSON, con la ubicación de la resolución y su calificación
-//				//Si no
-//					//Crear objeto sJSON, sin URL y calificación "NONE"
-//				//Añadir objeto sJSON creado a la lista solutionJSONList
-//
-//			}
-//			//Meter la lista exerciseJSONList en el objeto exercisesJSON
-//			//Ajustar el atributo total de exercisesJSON según el tamaño de la lista exerciseJSONList
-//
-//			//Meter la lista solutionJSONList en el objeto solutionsJSON
-//			//Ajustar el atributo total de solutionsJSON según el tamaño de la lista solutionJSONList
-//		
-//			//Meter el objeto exercisesJSON en el objeto initialDataJSON
-//			//Meter el objeto solutionsJSON en el objeto initialDataJSON
-//		}
-//
-//		return initialDataJSON;
-//	}	
-//
-//
-//	@SuppressWarnings("unchecked")
-//	@POST//Anotación de método para REST
-//	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
-//	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
-//	@Path("/addStudent")	
-//	public Response addStudent(StudentJSON studentJSON) {
-//		System.out.println("addStudent: "+hsr.getRemoteAddr());
-//		Response response;
-//		
-//		List<Student> rolledStudentList=//Consultar la lista de estudiantes con dni=dni de studentJSON
-//		if(rolledStudentList.size()==0) {
-//			
-//			String loginPrefix=studentJSON.getName().substring(0,1).toLowerCase()+studentJSON.getSurname().substring(0,1).toLowerCase();
-//			
-//			List<Student> students="";//Consultar la lista de estudiantes cuyo login comience por loginPrefix
-//			
-//			Student student=new Student();
-//			student.setDni(studentJSON.getDni());
-//			student.setLogin(loginPrefix+students.size());
-//			student.setName(studentJSON.getName());
-//			student.setSurname(studentJSON.getSurname());
-//			
-//			//Persistir objeto student en el Contexto de Persistencia
-//			
-//			response=Response.status(200).entity(/*nuevo login).build();
-//		}
-//		else
-//			response=Response.status(200).entity(/*login del usuario).build();
-//		
-//		return response;
-//	}
 }
