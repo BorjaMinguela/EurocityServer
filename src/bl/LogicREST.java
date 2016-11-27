@@ -98,6 +98,50 @@ public class LogicREST {
 		UserJSON uJSON=new UserJSON(user.getNombre());
 		return uJSON;
 	}
+	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/deleteUser")	
+	public Response deleteUser(@QueryParam("userName") String nombre) {
+		Response response;
+		System.out.println("deleteUser.Nombre= "+nombre);
+		System.out.println("deleteUsers: "+hsr.getRemoteAddr());
+		User user=new User();	
+		List<User> userList=(List<User>)em.createNamedQuery("User.findByName").setParameter("nombre", nombre).getResultList();
+		if (!userList.isEmpty()){
+			user=userList.get(0);
+		}
+		else{
+			user.setNombre("");
+		}
+		em.remove(user);
+		response=Response.status(200).entity("Usuario eliminado").build();
+		return response;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/requestValoraciones")	
+	public ValoracionesJSON requestValoraciones(@QueryParam("userName") String nombre) {
+		System.out.println("requestValoraciones.Nombre= "+nombre);
+		System.out.println("requestValoraciones: "+hsr.getRemoteAddr());
+		
+		ValoracionesJSON valoracionesJSON=new ValoracionesJSON();
+		List<ValoracionJSON> valoracionJSONList=new ArrayList<ValoracionJSON>();
+		
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", nombre).getSingleResult();
+		List<Valoracion> valoracionList=(List<Valoracion>)em.createNamedQuery("Valoracion.findByUser").setParameter("user", user).getResultList();
+		for(int i=0;i<valoracionList.size();i++){
+			Valoracion v=valoracionList.get(i);
+			ValoracionJSON vJSON=new ValoracionJSON(v.getNota(),v.getUser().getNombre(),v.getLugar().getNombre());
+			valoracionJSONList.add(vJSON);
+			System.out.println(valoracionList.get(i).getNota());
+		}
+		valoracionesJSON.setValoraciones(valoracionJSONList);
+		return valoracionesJSON;
+	}
+	
 	
 	
 	@SuppressWarnings("unchecked")
@@ -142,6 +186,29 @@ public class LogicREST {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@POST//Anotación de método para REST
+	@Consumes(MediaType.APPLICATION_JSON)//Anotación del tipo de datos consumido	
+	@Produces(MediaType.TEXT_PLAIN)//Anotación del tipo de datos producido	
+	@Path("/addFoto")	
+	public Response addFoto(FotoJSON fotoJSON) {
+		Response response;
+		System.out.println("addFoto: "+hsr.getRemoteAddr());
+		System.out.println("addFoto path: "+fotoJSON.getPath());
+		Lugar lugar=(Lugar)em.createNamedQuery("Lugar.findByName").setParameter("nombre", fotoJSON.getLugar()).getSingleResult();
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", fotoJSON.getUser()).getSingleResult();
+		System.out.println("Lugar: "+lugar.getNombre()+", "+lugar.getIdLugar());
+		System.out.println("User: "+user.getNombre()+", "+user.getIdUser());
+		Foto foto=new Foto();
+		foto.setPath(fotoJSON.getPath());
+		foto.setLugar(lugar);
+		foto.setUser(user);
+		em.persist(foto);
+		response=Response.status(200).entity("Foto añadida").build();
+		System.out.println("Foto añadida correctamente");
+		return response;
+	}
+	
+	@SuppressWarnings("unchecked")
 	@GET//Anotación de método para REST
 	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
 	@Path("/requestEjercicios")	
@@ -182,6 +249,29 @@ public class LogicREST {
 		List<FotoJSON> fotoJSONList=new ArrayList<FotoJSON>();
 		
 		List<Foto> fotoList=(List<Foto>)em.createNamedQuery("Foto.findByLugar").setParameter("usuario", user).setParameter("lugar", lugar).getResultList();
+		for(int i=0;i<fotoList.size();i++){
+			Foto f=fotoList.get(i);
+			FotoJSON fJSON=new FotoJSON(f.getPath(),f.getUser().getNombre(),f.getLugar().getNombre());
+			fotoJSONList.add(fJSON);
+			System.out.println(fotoList.get(i).getPath());
+		}
+		fotosJSON.setFotos(fotoJSONList);
+		return fotosJSON;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GET//Anotación de método para REST
+	@Produces(MediaType.APPLICATION_JSON)//Anotación del tipo de datos producido
+	@Path("/requestUserFotos")	
+	public FotosJSON requestUserFotos(@QueryParam("usuario") String usuario) {
+		System.out.println("requestFotos.usuario= "+usuario);
+		System.out.println("requestFotos: "+hsr.getRemoteAddr());
+		
+		User user=(User)em.createNamedQuery("User.findByName").setParameter("nombre", usuario).getSingleResult();
+		FotosJSON fotosJSON=new FotosJSON();
+		List<FotoJSON> fotoJSONList=new ArrayList<FotoJSON>();
+		
+		List<Foto> fotoList=(List<Foto>)em.createNamedQuery("Foto.findByUser").setParameter("usuario", user).getResultList();
 		for(int i=0;i<fotoList.size();i++){
 			Foto f=fotoList.get(i);
 			FotoJSON fJSON=new FotoJSON(f.getPath(),f.getUser().getNombre(),f.getLugar().getNombre());

@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Table(name="Fotos")
 @NamedQueries({
 	@NamedQuery(name="Foto.findAll", query="SELECT f FROM Foto f"),
+	@NamedQuery(name="Foto.findByUser", query="SELECT f FROM Foto f WHERE f.user= :usuario"),
 	@NamedQuery(name="Foto.findByLugar", query="SELECT f FROM Foto f WHERE f.user= :usuario AND f.lugar= :lugar")
 })
 public class Foto implements Serializable {
